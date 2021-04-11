@@ -39,7 +39,7 @@
     [(LamC param body) (string-append "(" (symbol->string param) " => " (translate body) ")")]
     [(PlusC l r) (string-append "(" (translate l) " + " (translate r) ")")]
     [(MultC l r) (string-append "(" (translate l) " * " (translate r) ")")]
-    [(IfleqC test t f) (string-append "if (" (translate test) " <= 0) { " (translate t) " } else { " (translate f) " }")]
+    [(IfleqC test t f) (string-append "((" (translate test) " <= 0) ? (" (translate t) ") : (" (translate f) "))")]
     [(PrintC expr) (string-append "console.log(" (translate expr) ");")]
     [(AppC funcname body) (string-append "(" (translate funcname) "(" (translate body) "))")]))
 
@@ -74,9 +74,9 @@
 (check-equal? (top-translate '(+ (* x y) z)) "((x * y) + z)")
 (check-equal? (top-translate '(+ (* x 5) z)) "((x * 5) + z)")
 (check-equal? (top-translate '(/ x => (+ x 5))) "(x => (x + 5))")
-(check-equal? (top-translate '(/ x => (ifleq0 x x (+ x 5)))) "(x => if (x <= 0) { x } else { (x + 5) })")
+(check-equal? (top-translate '(/ x => (ifleq0 x x (+ x 5)))) "(x => ((x <= 0) ? (x) : ((x + 5))))")
 (check-equal? (top-translate '(println z)) "console.log(z);")
-(check-equal? (top-translate '((/ x => (ifleq0 x x (+ x 5))) 3)) "((x => if (x <= 0) { x } else { (x + 5) })(3))")
+(check-equal? (top-translate '((/ x => (ifleq0 x x (+ x 5))) 3)) "((x => ((x <= 0) ? (x) : ((x + 5))))(3))")
 
 
 
